@@ -1,0 +1,24 @@
+services:
+  mongo.db.katalog:
+    restart: always
+    image: mongo:latest
+    container_name: mongo.db.katalog.container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: isubuMongo
+      MONGO_INITDB_ROOT_PASSWORD: isubu123!
+    ports:
+      - "7200:27017"
+    volumes:
+      - mongo.db.katalog.volume:/data/db
+  mongo.db.katalog.ui:
+    restart: always
+    image: mongo-express:latest
+    container_name: mongo.db.katalog.ui.container
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://isubuMongo:isubu123!@mongo.db.katalog:27017/
+      ME_CONFIG_BASICAUTH: false
+
+volumes:
+  mongo.db.katalog.volume:

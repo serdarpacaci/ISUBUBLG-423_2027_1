@@ -1,0 +1,50 @@
+services:
+  keycloak:
+    restart: always
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    command: start
+    environment:
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HOSTNAME_STRICT: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: isubu
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres.db.keycloak/keycloak_db
+      KC_DB_USERNAME: keycloak_db_user
+      KC_DB_PASSWORD: isubu!admin?
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres.db.keycloak
+  postgres.db.keycloak:
+    restart: always
+    image: postgres:17
+    container_name: postgres.db.keycloak.container
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: keycloak_db_user
+      POSTGRES_PASSWORD: isubu!admin?
+    ports:
+      - "5432:5432"
+    volumes:
+      - posrgres.db.keycloak.volume:/var/lib/postgresql/data
+  postgres.db.keycloak.ui:
+    restart: always
+    image: dpage/pgadmin4
+    container_name: postgres.db.keycloak.container.ui
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@isubu.edu.tr
+      PGADMIN_DEFAULT_PASSWORD: isubu!32?
+    volumes:
+      - posrgres.db.keycloak.ui.volume:/var/lib/pgadmin
+ 
+volumes:
+  posrgres.db.keycloak.volume:
+  posrgres.db.keycloak.ui.volume:
