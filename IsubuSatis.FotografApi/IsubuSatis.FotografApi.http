@@ -1,0 +1,6 @@
+@IsubuSatis.FotografApi_HostAddress = http://localhost:5228
+
+GET {{IsubuSatis.FotografApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

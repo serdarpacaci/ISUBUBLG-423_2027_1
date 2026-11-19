@@ -2,6 +2,8 @@
 using IsubuSatis.KatalogApi.Models;
 using IsubuSatis.KatalogApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 
 namespace IsubuSatis.KatalogApi
@@ -29,13 +31,29 @@ namespace IsubuSatis.KatalogApi
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x => {
                     x.RequireHttpsMetadata = false;
-                    x.Authority = "http://localhost:8080";
-                    
-                    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    x.Authority = "http://localhost:8080/realms/isubu";
+                    x.Audience = "katalog";
+                    x.TokenValidationParameters = new TokenValidationParameters()
                     {
                         RequireExpirationTime = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
                         ValidateLifetime = true,
+                        ValidateIssuer = true,
                         ClockSkew = TimeSpan.FromSeconds(15)
+                    };
+                }).AddJwtBearer("ClientCredentialSchema", x =>
+                {
+                    x.Authority = "http://localhost:8080/realms/isubu";
+                    x.Audience = "katalog";
+                    x.RequireHttpsMetadata = false;
+
+                    x.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidateIssuer = true,
                     };
                 });
 
